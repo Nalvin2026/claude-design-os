@@ -1,0 +1,1684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Design OS — A Designer's Operating System for AI-Assisted Work</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap');
+
+  :root {
+    --ink: #0f0e0d;
+    --paper: #f5f2ec;
+    --cream: #ede9e0;
+    --accent: #c84b2f;
+    --accent-light: #e8cfc8;
+    --muted: #6b6560;
+    --rule: #d4cfc6;
+    --code-bg: #1a1916;
+    --code-text: #e8e4dc;
+    --green: #2d6a4f;
+    --blue: #1d4e89;
+    --amber: #b5530a;
+    --section-pad: 5rem 0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 7rem 2rem 6rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 30% 60%, rgba(200,75,47,0.18) 0%, transparent 60%),
+                radial-gradient(ellipse at 75% 20%, rgba(200,75,47,0.10) 0%, transparent 50%);
+  }
+
+  .hero-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+    position: relative;
+  }
+
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2.8rem, 6vw, 5.2rem);
+    line-height: 1.08;
+    margin-bottom: 1.5rem;
+    position: relative;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: #d98067;
+  }
+
+  .hero-sub {
+    font-size: 1.1rem;
+    color: rgba(245,242,236,0.65);
+    max-width: 540px;
+    margin: 0 auto 3rem;
+    font-weight: 300;
+    position: relative;
+  }
+
+  .toc-bar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    position: relative;
+  }
+
+  .toc-pill {
+    background: rgba(245,242,236,0.08);
+    border: 1px solid rgba(245,242,236,0.15);
+    color: rgba(245,242,236,0.7);
+    padding: 0.35rem 0.85rem;
+    border-radius: 100px;
+    font-size: 0.78rem;
+    font-family: 'DM Mono', monospace;
+    text-decoration: none;
+    transition: all 0.2s;
+    letter-spacing: 0.02em;
+  }
+
+  .toc-pill:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+
+  /* ── LAYOUT ── */
+  .container {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  .container-wide {
+    max-width: 1060px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  section {
+    padding: var(--section-pad);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  section:last-of-type { border-bottom: none; }
+
+  /* ── SECTION HEADERS ── */
+  .section-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.6rem;
+    display: block;
+  }
+
+  h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(1.9rem, 3.5vw, 2.7rem);
+    line-height: 1.15;
+    margin-bottom: 0.5rem;
+    font-weight: 400;
+  }
+
+  .section-intro {
+    color: var(--muted);
+    font-size: 1.05rem;
+    margin-bottom: 2.5rem;
+    max-width: 640px;
+  }
+
+  h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.3rem;
+    font-weight: 400;
+    margin: 2.5rem 0 0.8rem;
+  }
+
+  h4 {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 1.8rem 0 0.6rem;
+    font-family: 'DM Mono', monospace;
+  }
+
+  p { margin-bottom: 1rem; }
+
+  strong { font-weight: 600; }
+
+  /* ── WORKFLOW STAGES ── */
+  .stage-grid {
+    display: grid;
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 2rem 0;
+  }
+
+  .stage {
+    background: var(--paper);
+    padding: 1.4rem 1.6rem;
+    display: grid;
+    grid-template-columns: 180px 1fr 1fr;
+    gap: 1.2rem;
+    align-items: start;
+  }
+
+  .stage:nth-child(even) { background: var(--cream); }
+
+  .stage-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .stage-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.05rem;
+    font-weight: 400;
+  }
+
+  .stage-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .stage-col-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .stage ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .stage ul li {
+    font-size: 0.88rem;
+    padding: 0.18rem 0;
+    color: var(--ink);
+    padding-left: 1rem;
+    position: relative;
+  }
+
+  .stage ul li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 0.75rem;
+  }
+
+  .stage-table-header {
+    background: var(--ink) !important;
+    color: var(--paper);
+    padding: 0.9rem 1.6rem;
+    display: grid;
+    grid-template-columns: 180px 1fr 1fr;
+    gap: 1.2rem;
+  }
+
+  .stage-table-header span {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(245,242,236,0.5);
+  }
+
+  .stage-table-header span:first-child { color: rgba(245,242,236,0.8); }
+
+  /* ── CODE BLOCKS ── */
+  pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 1.4rem 1.6rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.83rem;
+    line-height: 1.65;
+    margin: 1.2rem 0;
+    position: relative;
+  }
+
+  pre .comment { color: #6b7280; font-style: italic; }
+  pre .key { color: #93c5fd; }
+  pre .str { color: #86efac; }
+  pre .cmd { color: #fde68a; }
+  pre .path { color: #c4b5fd; }
+
+  code {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.85em;
+    background: var(--cream);
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    color: var(--accent);
+  }
+
+  pre code {
+    background: none;
+    padding: 0;
+    color: inherit;
+  }
+
+  /* ── PROMPT CARDS ── */
+  .prompt-card {
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 1.5rem 0;
+  }
+
+  .prompt-card-header {
+    background: var(--cream);
+    padding: 0.7rem 1.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .prompt-card-header span:first-child {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .prompt-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 100px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .tag-init { background: #dbeafe; color: #1d4e89; }
+  .tag-iter { background: #d1fae5; color: #065f46; }
+  .tag-refine { background: #fef3c7; color: #92400e; }
+  .tag-safe { background: #fce7f3; color: #9d174d; }
+
+  .prompt-body {
+    padding: 1.2rem 1.4rem;
+    font-size: 0.9rem;
+    line-height: 1.65;
+    font-family: 'DM Mono', monospace;
+    color: #2d2a26;
+    white-space: pre-wrap;
+  }
+
+  /* ── FOLDER TREE ── */
+  .folder-tree {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 1.6rem 1.8rem;
+    border-radius: 10px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82rem;
+    line-height: 2;
+    margin: 1.5rem 0;
+  }
+
+  .folder-tree .folder { color: #93c5fd; }
+  .folder-tree .file { color: #e8e4dc; }
+  .folder-tree .comment-tree { color: #4b5563; }
+  .folder-tree .dim { color: #374151; }
+
+  /* ── CALLOUT BOXES ── */
+  .callout {
+    padding: 1.2rem 1.5rem;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+    font-size: 0.92rem;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .callout-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 0.05rem; }
+
+  .callout.tip { background: #f0fdf4; border-left: 3px solid var(--green); color: #14532d; }
+  .callout.warn { background: #fffbeb; border-left: 3px solid var(--amber); color: #451a03; }
+  .callout.danger { background: #fef2f2; border-left: 3px solid #dc2626; color: #450a0a; }
+  .callout.info { background: #eff6ff; border-left: 3px solid var(--blue); color: #1e3a5f; }
+
+  /* ── TOOL CARDS ── */
+  .tool-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .tool-card {
+    background: var(--cream);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 1.3rem;
+  }
+
+  .tool-card-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .tool-card-role {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    margin-bottom: 0.6rem;
+  }
+
+  .tool-card p {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  /* ── GIT FLOW ── */
+  .git-flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 1.5rem 0;
+  }
+
+  .git-step {
+    display: flex;
+    gap: 1.2rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .git-step:last-child { border-bottom: none; }
+
+  .git-step-num {
+    width: 28px;
+    height: 28px;
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+
+  .git-step-content h4 {
+    margin: 0 0 0.2rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--ink);
+  }
+
+  .git-step-content p {
+    font-size: 0.87rem;
+    color: var(--muted);
+    margin: 0;
+  }
+
+  /* ── MISTAKES TABLE ── */
+  .mistakes-grid {
+    display: grid;
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 1.5rem 0;
+  }
+
+  .mistake-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--rule);
+  }
+
+  .mistake-row > div {
+    padding: 1.1rem 1.3rem;
+    font-size: 0.88rem;
+  }
+
+  .mistake-row > div:first-child { background: #fff5f5; }
+  .mistake-row > div:last-child { background: #f0fdf4; }
+
+  .mistake-row.header > div {
+    background: var(--ink);
+    color: rgba(245,242,236,0.6);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .mistake-row > div:first-child strong { color: #b91c1c; font-size: 0.82rem; }
+  .mistake-row > div:last-child strong { color: #15803d; font-size: 0.82rem; }
+
+  /* ── DEPLOY STEPS ── */
+  .deploy-steps {
+    counter-reset: step;
+    list-style: none;
+    padding: 0;
+    margin: 1.2rem 0;
+  }
+
+  .deploy-steps li {
+    counter-increment: step;
+    display: flex;
+    gap: 1rem;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid var(--rule);
+    font-size: 0.92rem;
+    align-items: flex-start;
+  }
+
+  .deploy-steps li:last-child { border-bottom: none; }
+
+  .deploy-steps li::before {
+    content: counter(step, decimal-leading-zero);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 0.12rem;
+    min-width: 2rem;
+  }
+
+  /* ── HOSTING COMPARE ── */
+  .host-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .host-card {
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .host-card.best { border-color: var(--accent); }
+
+  .host-card-head {
+    padding: 0.9rem 1.1rem;
+    background: var(--cream);
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .host-card.best .host-card-head { background: var(--accent); color: white; }
+  .host-card.best .host-card-head .host-tag { background: rgba(255,255,255,0.2); color: white; }
+
+  .host-name { font-weight: 600; font-size: 0.95rem; }
+  .host-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: var(--rule);
+    padding: 0.2rem 0.55rem;
+    border-radius: 100px;
+    color: var(--muted);
+  }
+
+  .host-body {
+    padding: 1rem 1.1rem;
+    font-size: 0.84rem;
+  }
+
+  .host-body ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 0.8rem;
+  }
+
+  .host-body ul li {
+    padding: 0.15rem 0;
+    padding-left: 1rem;
+    position: relative;
+    color: var(--muted);
+  }
+
+  .host-body ul li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--green);
+    font-size: 0.75rem;
+  }
+
+  .host-verdict {
+    font-size: 0.8rem;
+    font-style: italic;
+    color: var(--muted);
+    border-top: 1px solid var(--rule);
+    padding-top: 0.7rem;
+    margin-top: 0.5rem;
+  }
+
+  /* ── WALKTHROUGH ── */
+  .walkthrough {
+    counter-reset: wstep;
+    list-style: none;
+    padding: 0;
+    margin: 1.5rem 0;
+  }
+
+  .wstep {
+    counter-increment: wstep;
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 1.2rem;
+    margin-bottom: 2.5rem;
+    align-items: start;
+  }
+
+  .wstep-num {
+    background: var(--ink);
+    color: var(--paper);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.15rem;
+    flex-shrink: 0;
+  }
+
+  .wstep-body h3 {
+    margin-top: 0.4rem;
+    font-size: 1.1rem;
+  }
+
+  .wstep-body p { font-size: 0.93rem; }
+
+  /* ── FEATURE PILLS ── */
+  .output-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin: 1.2rem 0;
+  }
+
+  .output-pill {
+    background: var(--cream);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 0.5rem 0.9rem;
+    font-size: 0.82rem;
+    font-weight: 500;
+  }
+
+  /* ── DIVIDER ── */
+  .section-divider {
+    width: 40px;
+    height: 2px;
+    background: var(--accent);
+    margin: 1rem 0 2rem;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--ink);
+    color: rgba(245,242,236,0.4);
+    text-align: center;
+    padding: 3rem 2rem;
+    font-size: 0.83rem;
+    font-family: 'DM Mono', monospace;
+  }
+
+  footer strong { color: var(--paper); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 700px) {
+    .stage { grid-template-columns: 1fr; }
+    .stage-table-header { grid-template-columns: 1fr; }
+    .stage-table-header span:not(:first-child) { display: none; }
+    .host-cards { grid-template-columns: 1fr; }
+    .tool-grid { grid-template-columns: 1fr 1fr; }
+    .mistake-row { grid-template-columns: 1fr; }
+    .mistake-row > div:first-child { border-bottom: 1px solid var(--rule); }
+    .wstep { grid-template-columns: 40px 1fr; gap: 0.8rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <p class="hero-label">Designer's Operating System</p>
+  <h1>Claude <em>Design</em> OS</h1>
+  <p class="hero-sub">A complete, practical operating system for digital product designers using Claude across every stage of the design process.</p>
+  <div class="toc-bar">
+    <a class="toc-pill" href="#workflow">01 Workflow</a>
+    <a class="toc-pill" href="#vibe-coding">02 Vibe Coding</a>
+    <a class="toc-pill" href="#structure">03 Project Structure</a>
+    <a class="toc-pill" href="#git">04 Version Control</a>
+    <a class="toc-pill" href="#sharing">05 Sharing Prototypes</a>
+    <a class="toc-pill" href="#outputs">06 Design Outputs</a>
+    <a class="toc-pill" href="#toolstack">07 Tool Stack</a>
+    <a class="toc-pill" href="#example">08 Real-World Example</a>
+  </div>
+</div>
+
+
+<!-- SECTION 1: WORKFLOW -->
+<section id="workflow">
+<div class="container">
+  <span class="section-num">01 — The Ideal AI-Assisted Design Workflow</span>
+  <h2>From Idea to MVP with Claude</h2>
+  <div class="section-divider"></div>
+  <p class="section-intro">Think of Claude as a senior collaborator who never sleeps. This table maps every project stage to what Claude handles, what you handle, and what tools are in play.</p>
+
+  <div class="stage-grid">
+    <div class="stage-table-header">
+      <span>Stage</span>
+      <span>Claude handles</span>
+      <span>You handle</span>
+    </div>
+
+    <div class="stage">
+      <div class="stage-header">
+        <span class="stage-name">💡 Idea</span>
+        <span class="stage-badge">Discovery</span>
+      </div>
+      <div>
+        <div class="stage-col-label">Claude</div>
+        <ul>
+          <li>Rapid concept expansion from a seed idea</li>
+          <li>Competitive landscape summaries</li>
+          <li>Problem-space framing and user pain points</li>
+          <li>Generating multiple product directions</li>
+        </ul>
+      </div>
+      <div>
+        <div class="stage-col-label">You</div>
+        <ul>
+          <li>Choosing the direction that excites you</li>
+          <li>Applying domain knowledge and intuition</li>
+          <li>Validating with real users or stakeholders</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="stage-header">
+        <span class="stage-name">🗺 Concept</span>
+        <span class="stage-badge">Strategy</span>
+      </div>
+      <div>
+        <div class="stage-col-label">Claude</div>
+        <ul>
+          <li>Feature lists ranked by value vs. complexity</li>
+          <li>Persona drafts and jobs-to-be-done analysis</li>
+          <li>Value proposition statements</li>
+          <li>First draft of product brief / PRD</li>
+        </ul>
+      </div>
+      <div>
+        <div class="stage-col-label">You</div>
+        <ul>
+          <li>Editing the brief with real context</li>
+          <li>Sign-off from stakeholders</li>
+          <li>Setting scope and constraints</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="stage-header">
+        <span class="stage-name">🔀 User Flows</span>
+        <span class="stage-badge">Architecture</span>
+      </div>
+      <div>
+        <div class="stage-col-label">Claude</div>
+        <ul>
+          <li>Full user flow text diagrams (Mermaid syntax)</li>
+          <li>Happy path + edge case identification</li>
+          <li>Screen inventory lists</li>
+          <li>Navigation structure proposals</li>
+        </ul>
+      </div>
+      <div>
+        <div class="stage-col-label">You</div>
+        <ul>
+          <li>Reviewing flows against user research</li>
+          <li>Simplifying or merging screens</li>
+          <li>Visual refinement in Figma/Whimsical</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="stage-header">
+        <span class="stage-name">🖥 Prototype</span>
+        <span class="stage-badge">Build</span>
+      </div>
+      <div>
+        <div class="stage-col-label">Claude</div>
+        <ul>
+          <li>Full HTML/CSS/JS or React prototypes</li>
+          <li>Component-level code generation</li>
+          <li>Micro-animations and transitions</li>
+          <li>Design system tokens and CSS variables</li>
+        </ul>
+      </div>
+      <div>
+        <div class="stage-col-label">You</div>
+        <ul>
+          <li>Copywriting and brand voice</li>
+          <li>Spacing and visual hierarchy tweaks</li>
+          <li>Asset creation (icons, images, logos)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="stage-header">
+        <span class="stage-name">💬 Client Feedback</span>
+        <span class="stage-badge">Review</span>
+      </div>
+      <div>
+        <div class="stage-col-label">Claude</div>
+        <ul>
+          <li>Structuring feedback into actionable items</li>
+          <li>Drafting change proposals to review</li>
+          <li>Writing feedback summaries for stakeholders</li>
+        </ul>
+      </div>
+      <div>
+        <div class="stage-col-label">You</div>
+        <ul>
+          <li>Facilitating the feedback session</li>
+          <li>Prioritising what to act on</li>
+          <li>Filtering subjective vs. strategic feedback</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="stage-header">
+        <span class="stage-name">🔄 Iteration</span>
+        <span class="stage-badge">Refine</span>
+      </div>
+      <div>
+        <div class="stage-col-label">Claude</div>
+        <ul>
+          <li>Implementing UI changes from feedback</li>
+          <li>A/B variant generation</li>
+          <li>Accessibility auditing</li>
+          <li>Performance or readability improvements</li>
+        </ul>
+      </div>
+      <div>
+        <div class="stage-col-label">You</div>
+        <ul>
+          <li>Comparing variants and deciding</li>
+          <li>Maintaining design consistency</li>
+          <li>Managing client expectations</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="stage-header">
+        <span class="stage-name">🚀 MVP</span>
+        <span class="stage-badge">Ship</span>
+      </div>
+      <div>
+        <div class="stage-col-label">Claude</div>
+        <ul>
+          <li>Deployment scripts and config</li>
+          <li>Writing documentation and README</li>
+          <li>Handoff notes for developers</li>
+        </ul>
+      </div>
+      <div>
+        <div class="stage-col-label">You</div>
+        <ul>
+          <li>Final sign-off and QA</li>
+          <li>Deploying and sharing the link</li>
+          <li>Post-launch monitoring</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <span class="callout-icon">💡</span>
+    <div><strong>Golden rule:</strong> Claude generates, you curate. Your taste, domain knowledge, and judgment are what transform good AI output into great design work. The best outputs come from tight human-AI collaboration, not pure delegation.</div>
+  </div>
+</div>
+</section>
+
+
+<!-- SECTION 2: VIBE CODING -->
+<section id="vibe-coding">
+<div class="container">
+  <span class="section-num">02 — Vibe Coding for Designers</span>
+  <h2>Prompting Claude Code Like a Pro</h2>
+  <div class="section-divider"></div>
+  <p class="section-intro">Vibe coding means communicating intent, not instructions. You describe the experience you want — Claude figures out the implementation. Here's how to do it well.</p>
+
+  <h3>The CRAFT Prompt Framework</h3>
+  <p>Every strong vibe coding prompt has five layers:</p>
+
+  <div class="callout tip">
+    <span class="callout-icon">✦</span>
+    <div>
+      <strong>C</strong>ontext — What this is and who it's for<br>
+      <strong>R</strong>esult — What you want to see<br>
+      <strong>A</strong>esthetic — The visual mood and feel<br>
+      <strong>F</strong>unctionality — Specific interactions or states<br>
+      <strong>T</strong>ech — Stack, constraints, or file to edit
+    </div>
+  </div>
+
+  <h4>Example Prompt — Initial Build</h4>
+  <div class="prompt-card">
+    <div class="prompt-card-header">
+      <span>Initial Prototype Prompt</span>
+      <span class="prompt-tag tag-init">init</span>
+    </div>
+    <div class="prompt-body">Context: I'm building a wellness app for busy professionals aged 28–40.
+
+Result: Create a daily check-in screen where users rate their energy (1–5) and write a short note.
+
+Aesthetic: Calm, minimal, warm off-whites and earth tones. Feels like a thoughtful journal, not a productivity app. Generous whitespace. Soft transitions.
+
+Functionality:
+- Energy rating uses 5 clickable circles that fill on select
+- Text area expands as user types
+- A "Log it" button appears only when both fields have input
+- Subtle confirmation animation on submit
+
+Tech: Single HTML file with vanilla CSS and JS. No frameworks. Mobile-first, max-width 420px centered on desktop.</div>
+  </div>
+
+  <h4>Example Prompt — Safe Iteration</h4>
+  <div class="prompt-card">
+    <div class="prompt-card-header">
+      <span>Iteration Prompt — Change one thing</span>
+      <span class="prompt-tag tag-iter">iterate</span>
+    </div>
+    <div class="prompt-body">The energy rating circles work great. Keep everything else exactly as is.
+
+Only change: Replace the circles with a horizontal slider that uses a gradient from red (left/low) to green (right/high). Show the numeric value (1–5) above the thumb as it moves.</div>
+  </div>
+
+  <h4>Example Prompt — Refactoring UI</h4>
+  <div class="prompt-card">
+    <div class="prompt-card-header">
+      <span>Refactor Prompt — Improve existing code</span>
+      <span class="prompt-tag tag-refine">refine</span>
+    </div>
+    <div class="prompt-body">Here's my current prototype [paste code]. 
+
+The layout is working but the typography feels generic. Please:
+1. Replace the font stack with something that feels editorial and warm (suggest options first, then implement)
+2. Tighten the line-height on body text to 1.5
+3. Make the heading slightly larger on desktop only
+4. Keep all existing functionality and logic exactly the same — only touch CSS typography properties.</div>
+  </div>
+
+  <h4>Example Prompt — Safe Animation Add</h4>
+  <div class="prompt-card">
+    <div class="prompt-card-header">
+      <span>Animation Prompt — Additive change</span>
+      <span class="prompt-tag tag-safe">animation</span>
+    </div>
+    <div class="prompt-body">Add a micro-animation to the submit button in my existing prototype.
+
+When the user clicks "Log it":
+- Button text changes to "Logged ✓"
+- Button gets a soft green background (#4ade80) with a 0.3s ease transition
+- After 1.5 seconds it resets back to original state
+
+Do not touch any other part of the code. Show me only the changed/added lines, with a comment marking where to insert them.</div>
+  </div>
+
+  <h3>How to Iterate Safely</h3>
+
+  <div class="git-flow">
+    <div class="git-step">
+      <div class="git-step-num">1</div>
+      <div class="git-step-content">
+        <h4>Save before you prompt</h4>
+        <p>Before every Claude iteration, duplicate your file and name it <code>v2-attempt.html</code>. If Claude breaks something, you have the last known-good version instantly.</p>
+      </div>
+    </div>
+    <div class="git-step">
+      <div class="git-step-num">2</div>
+      <div class="git-step-content">
+        <h4>Change one thing at a time</h4>
+        <p>Never ask Claude to "fix the layout and add animations and refactor the colours" in one prompt. Single-concern prompts give you surgical, reversible changes.</p>
+      </div>
+    </div>
+    <div class="git-step">
+      <div class="git-step-num">3</div>
+      <div class="git-step-content">
+        <h4>Ask Claude to show diffs, not full rewrites</h4>
+        <p>Add "Show only the changed code with comments marking where to insert it" at the end of prompts. This avoids accidentally losing code between regenerations.</p>
+      </div>
+    </div>
+    <div class="git-step">
+      <div class="git-step-num">4</div>
+      <div class="git-step-content">
+        <h4>Lock working sections explicitly</h4>
+        <p>Use language like "Keep everything in the <code>.card</code> component exactly as is — only modify the button styles." Claude takes explicit constraints seriously.</p>
+      </div>
+    </div>
+    <div class="git-step">
+      <div class="git-step-num">5</div>
+      <div class="git-step-content">
+        <h4>Test in the browser after every change</h4>
+        <p>Open the file locally in Chrome after each iteration. Catch problems when they're small rather than discovering a tangled mess three prompts later.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+
+<!-- SECTION 3: PROJECT STRUCTURE -->
+<section id="structure">
+<div class="container">
+  <span class="section-num">03 — Project Structure</span>
+  <h2>A Folder System Built for AI Work</h2>
+  <div class="section-divider"></div>
+  <p class="section-intro">Structure isn't just organisation — it's communication. A consistent project layout means Claude always knows where things live when you share file paths in prompts.</p>
+
+  <div class="folder-tree">
+<span class="folder">my-project/</span>
+<span class="dim">│</span>
+<span class="dim">├── </span><span class="folder">01-discovery/</span>               <span class="comment-tree"># Brief, research, personas</span>
+<span class="dim">│   ├── </span><span class="file">brief.md</span>                   <span class="comment-tree"># Project brief (Claude helps draft)</span>
+<span class="dim">│   ├── </span><span class="file">personas.md</span>
+<span class="dim">│   └── </span><span class="file">competitive-notes.md</span>
+<span class="dim">│</span>
+<span class="dim">├── </span><span class="folder">02-flows/</span>                   <span class="comment-tree"># User flows & screen maps</span>
+<span class="dim">│   ├── </span><span class="file">user-flows.md</span>              <span class="comment-tree"># Mermaid diagrams (Claude generates)</span>
+<span class="dim">│   ├── </span><span class="file">screen-inventory.md</span>
+<span class="dim">│   └── </span><span class="folder">exports/</span>                   <span class="comment-tree"># PNG exports from Whimsical/Figma</span>
+<span class="dim">│</span>
+<span class="dim">├── </span><span class="folder">03-design-system/</span>           <span class="comment-tree"># Tokens, components, styles</span>
+<span class="dim">│   ├── </span><span class="file">tokens.css</span>                 <span class="comment-tree"># CSS custom properties</span>
+<span class="dim">│   ├── </span><span class="file">typography.css</span>
+<span class="dim">│   ├── </span><span class="file">components.css</span>
+<span class="dim">│   └── </span><span class="file">design-system.md</span>          <span class="comment-tree"># Usage docs</span>
+<span class="dim">│</span>
+<span class="dim">├── </span><span class="folder">04-prototypes/</span>              <span class="comment-tree"># Interactive HTML/React prototypes</span>
+<span class="dim">│   ├── </span><span class="folder">v1-concept/</span>
+<span class="dim">│   │   ├── </span><span class="file">index.html</span>             <span class="comment-tree"># Working prototype</span>
+<span class="dim">│   │   └── </span><span class="file">notes.md</span>               <span class="comment-tree"># What this version tested</span>
+<span class="dim">│   ├── </span><span class="folder">v2-client-feedback/</span>
+<span class="dim">│   └── </span><span class="folder">v3-refined/</span>
+<span class="dim">│</span>
+<span class="dim">├── </span><span class="folder">05-experiments/</span>             <span class="comment-tree"># Safe sandbox — throwaway tests</span>
+<span class="dim">│   ├── </span><span class="file">animation-test.html</span>
+<span class="dim">│   ├── </span><span class="file">layout-experiment.html</span>
+<span class="dim">│   └── </span><span class="file">colour-palette.html</span>
+<span class="dim">│</span>
+<span class="dim">├── </span><span class="folder">06-animations/</span>              <span class="comment-tree"># Standalone motion work</span>
+<span class="dim">│   ├── </span><span class="file">onboarding-transition.html</span>
+<span class="dim">│   └── </span><span class="file">loading-states.html</span>
+<span class="dim">│</span>
+<span class="dim">├── </span><span class="folder">07-presentations/</span>           <span class="comment-tree"># Client-facing decks</span>
+<span class="dim">│   ├── </span><span class="file">concept-presentation.html</span>  <span class="comment-tree"># HTML slide deck</span>
+<span class="dim">│   └── </span><span class="folder">assets/</span>
+<span class="dim">│</span>
+<span class="dim">├── </span><span class="folder">08-docs/</span>                    <span class="comment-tree"># Project documentation</span>
+<span class="dim">│   ├── </span><span class="file">changelog.md</span>              <span class="comment-tree"># What changed and why</span>
+<span class="dim">│   ├── </span><span class="file">decisions.md</span>              <span class="comment-tree"># Design decision log</span>
+<span class="dim">│   └── </span><span class="file">handoff-notes.md</span>          <span class="comment-tree"># For developers</span>
+<span class="dim">│</span>
+<span class="dim">├── </span><span class="folder">assets/</span>                     <span class="comment-tree"># Shared images, icons, fonts</span>
+<span class="dim">│   ├── </span><span class="folder">icons/</span>
+<span class="dim">│   ├── </span><span class="folder">images/</span>
+<span class="dim">│   └── </span><span class="folder">fonts/</span>
+<span class="dim">│</span>
+<span class="dim">├── </span><span class="file">README.md</span>                   <span class="comment-tree"># Project overview</span>
+<span class="dim">└── </span><span class="file">.gitignore</span>                  <span class="comment-tree"># Exclude node_modules, .DS_Store</span>
+  </div>
+
+  <div class="callout tip">
+    <span class="callout-icon">✦</span>
+    <div><strong>Pro tip:</strong> When you start a new conversation with Claude, share your folder structure and brief from <code>README.md</code> as context. This gives Claude the full picture before you ask it to generate or edit anything — outputs will be far more relevant and consistent.</div>
+  </div>
+
+  <h3>Your <code>README.md</code> template</h3>
+  <pre><span class="comment"># Project Name</span>
+
+<span class="key">## What this is</span>
+One sentence: what the product does and who it's for.
+
+<span class="key">## Design goals</span>
+- [Goal 1]
+- [Goal 2]
+
+<span class="key">## Tech constraints</span>
+- Prototypes: single HTML files, vanilla CSS/JS
+- No build tools needed for prototype stage
+- Design system: CSS custom properties in tokens.css
+
+<span class="key">## Current status</span>
+Working on: v2 prototype after client feedback round.
+
+<span class="key">## File guide</span>
+- /04-prototypes/v2-client-feedback/index.html — current working prototype
+- /03-design-system/tokens.css — all design tokens
+- /08-docs/decisions.md — why we made key choices</pre>
+</div>
+</section>
+
+
+<!-- SECTION 4: VERSION CONTROL -->
+<section id="git">
+<div class="container">
+  <span class="section-num">04 — Version Control for Designers</span>
+  <h2>GitHub Without the Fear</h2>
+  <div class="section-divider"></div>
+  <p class="section-intro">You don't need to understand Git deeply to benefit from it. Think of it as a time machine with labels. Here's the minimum viable Git workflow for designers.</p>
+
+  <h3>The Three Commands You Need</h3>
+  <pre><span class="comment"># Stage your changes</span>
+<span class="cmd">git add .</span>
+
+<span class="comment"># Save a named snapshot</span>
+<span class="cmd">git commit -m "Add animated submit button to check-in screen"</span>
+
+<span class="comment"># Push to GitHub (backup + sharing)</span>
+<span class="cmd">git push</span></pre>
+
+  <h3>When to Commit</h3>
+  <div class="git-flow">
+    <div class="git-step">
+      <div class="git-step-num">✓</div>
+      <div class="git-step-content">
+        <h4>Before asking Claude to iterate</h4>
+        <p>Always commit your working prototype before a new Claude session. Commit message: <code>"Working v1 before energy slider experiment"</code></p>
+      </div>
+    </div>
+    <div class="git-step">
+      <div class="git-step-num">✓</div>
+      <div class="git-step-content">
+        <h4>After each meaningful feature</h4>
+        <p>When a screen or component is working as expected. Not after every tiny CSS tweak — after something you'd be sad to lose.</p>
+      </div>
+    </div>
+    <div class="git-step">
+      <div class="git-step-num">✓</div>
+      <div class="git-step-content">
+        <h4>Before a client presentation</h4>
+        <p>Tag this as a release: <code>git tag v1.0-client-presentation</code> so you can always return to exactly what the client saw.</p>
+      </div>
+    </div>
+    <div class="git-step">
+      <div class="git-step-num">✓</div>
+      <div class="git-step-content">
+        <h4>End of each working session</h4>
+        <p>Even with a "WIP" message. You'll thank yourself the next morning. Message: <code>"WIP: working on mobile nav states"</code></p>
+      </div>
+    </div>
+  </div>
+
+  <h3>Experimenting Without Breaking Main</h3>
+  <p>Branches are your safe sandbox. Make one whenever you want to try something risky:</p>
+  <pre><span class="comment"># Create and switch to a new branch</span>
+<span class="cmd">git checkout -b</span> <span class="str">experiment/dark-mode</span>
+
+<span class="comment"># ... make changes, commit them ...</span>
+
+<span class="comment"># If the experiment works: merge it back to main</span>
+<span class="cmd">git checkout main</span>
+<span class="cmd">git merge</span> <span class="str">experiment/dark-mode</span>
+
+<span class="comment"># If it doesn't work: simply discard the branch</span>
+<span class="cmd">git checkout main</span>
+<span class="cmd">git branch -d</span> <span class="str">experiment/dark-mode</span></pre>
+
+  <h3>A Designer-Friendly Branch Strategy</h3>
+  <div class="output-pills">
+    <div class="output-pill">🌿 <strong>main</strong> — always deployable, client-ready</div>
+    <div class="output-pill">🧪 <strong>experiment/[name]</strong> — risky ideas</div>
+    <div class="output-pill">🔧 <strong>feature/[name]</strong> — new screens or sections</div>
+    <div class="output-pill">🐛 <strong>fix/[name]</strong> — fixing something broken</div>
+  </div>
+
+  <div class="callout info">
+    <span class="callout-icon">💡</span>
+    <div><strong>GitHub Desktop</strong> is a free visual interface for Git — no terminal required. Every operation described above has a button. Install it at desktop.github.com and you can manage branches, commits, and pushes entirely with clicks.</div>
+  </div>
+</div>
+</section>
+
+
+<!-- SECTION 5: SHARING PROTOTYPES -->
+<section id="sharing">
+<div class="container">
+  <span class="section-num">05 — Sharing Interactive Prototypes</span>
+  <h2>A Link Clients Can Actually Click</h2>
+  <div class="section-divider"></div>
+  <p class="section-intro">The best client presentation is a real URL they can open on their phone. Here are your three options, from simplest to most powerful.</p>
+
+  <div class="host-cards">
+    <div class="host-card best">
+      <div class="host-card-head">
+        <span class="host-name">Vercel</span>
+        <span class="host-tag">Recommended</span>
+      </div>
+      <div class="host-body">
+        <ul>
+          <li>Connects to GitHub — auto-deploys on push</li>
+          <li>Every branch gets its own preview URL</li>
+          <li>Free tier is generous</li>
+          <li>Instant global CDN, very fast</li>
+          <li>Works with plain HTML or React</li>
+        </ul>
+        <div class="host-verdict">Best for designers who commit to GitHub regularly. Once set up, sharing is just "push and send the link."</div>
+      </div>
+    </div>
+
+    <div class="host-card">
+      <div class="host-card-head">
+        <span class="host-name">Netlify</span>
+        <span class="host-tag">Great runner-up</span>
+      </div>
+      <div class="host-body">
+        <ul>
+          <li>Drag-and-drop folder upload (no CLI needed)</li>
+          <li>GitHub integration also available</li>
+          <li>Password-protected links (great for clients)</li>
+          <li>Free tier available</li>
+        </ul>
+        <div class="host-verdict">Best if you want to deploy without touching Git. Drag your project folder onto Netlify and get a URL in 10 seconds.</div>
+      </div>
+    </div>
+
+    <div class="host-card">
+      <div class="host-card-head">
+        <span class="host-name">GitHub Pages</span>
+        <span class="host-tag">No frills</span>
+      </div>
+      <div class="host-body">
+        <ul>
+          <li>Completely free, built into GitHub</li>
+          <li>Simple setup for single HTML files</li>
+          <li>Slower to update (needs a push + wait)</li>
+          <li>No password protection on free plan</li>
+        </ul>
+        <div class="host-verdict">Good for long-lived, public-facing prototypes. Not ideal for rapid iteration with clients.</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>The Simplest Deploy Workflow (Vercel)</h3>
+  <ol class="deploy-steps">
+    <li>Push your project folder to a GitHub repository</li>
+    <li>Go to <strong>vercel.com</strong> → "Add New Project" → connect your GitHub</li>
+    <li>Select your repository → click Deploy (no config needed for HTML files)</li>
+    <li>Vercel gives you a URL like <code>your-project.vercel.app</code></li>
+    <li>From now on: every <code>git push</code> to <strong>main</strong> auto-updates the live URL</li>
+    <li>Every branch push creates a separate preview URL — perfect for A/B testing with clients</li>
+    <li>Send the link. Done.</li>
+  </ol>
+
+  <h3>The Drag-and-Drop Workflow (Netlify)</h3>
+  <ol class="deploy-steps">
+    <li>Open <strong>netlify.com</strong> → drag your project folder into the browser window</li>
+    <li>Netlify generates a random URL (e.g. <code>hungry-mcclintock-3a2b.netlify.app</code>)</li>
+    <li>You can rename it to something readable in Settings</li>
+    <li>To update: drag the folder again or connect GitHub for auto-deploy</li>
+  </ol>
+
+  <div class="callout warn">
+    <span class="callout-icon">⚠️</span>
+    <div><strong>Client link tip:</strong> Before sending a prototype link, always test it on mobile. Many prototypes look great on desktop but break on phone screens. Claude can fix responsive issues quickly — just paste your code and say "Make this work well on iPhone screen sizes."</div>
+  </div>
+</div>
+</section>
+
+
+<!-- SECTION 6: CLAUDE FOR DESIGN OUTPUTS -->
+<section id="outputs">
+<div class="container">
+  <span class="section-num">06 — Using Claude for Key Design Outputs</span>
+  <h2>What Claude Can Build For You</h2>
+  <div class="section-divider"></div>
+  <p class="section-intro">Claude is capable of generating production-quality design artefacts across every output type a designer produces. Here's how to approach each one.</p>
+
+  <h3>Design System Tokens</h3>
+  <p>Ask Claude to generate a complete token file from a brief description of your brand:</p>
+  <pre><span class="comment">/* Claude generates this from: "calm wellness app, warm earth tones, accessible" */</span>
+:root {
+  <span class="key">--color-bg</span>: <span class="str">#f7f4ee</span>;
+  <span class="key">--color-surface</span>: <span class="str">#ede9e0</span>;
+  <span class="key">--color-text-primary</span>: <span class="str">#1c1a17</span>;
+  <span class="key">--color-text-muted</span>: <span class="str">#6b6560</span>;
+  <span class="key">--color-accent</span>: <span class="str">#7c6b4e</span>;
+  <span class="key">--color-success</span>: <span class="str">#4a7c59</span>;
+
+  <span class="key">--space-xs</span>: <span class="str">4px</span>;
+  <span class="key">--space-sm</span>: <span class="str">8px</span>;
+  <span class="key">--space-md</span>: <span class="str">16px</span>;
+  <span class="key">--space-lg</span>: <span class="str">32px</span>;
+  <span class="key">--space-xl</span>: <span class="str">64px</span>;
+
+  <span class="key">--radius-sm</span>: <span class="str">6px</span>;
+  <span class="key">--radius-md</span>: <span class="str">12px</span>;
+  <span class="key">--radius-full</span>: <span class="str">9999px</span>;
+
+  <span class="key">--font-display</span>: <span class="str">'Lora', Georgia, serif</span>;
+  <span class="key">--font-body</span>: <span class="str">'DM Sans', system-ui, sans-serif</span>;
+  <span class="key">--font-mono</span>: <span class="str">'DM Mono', monospace</span>;
+}</pre>
+
+  <h3>UI Components</h3>
+  <p>Request components with specific states. Always include hover, focus, disabled, and loading in your prompt:</p>
+  <div class="prompt-card">
+    <div class="prompt-card-header">
+      <span>Component Prompt</span>
+      <span class="prompt-tag tag-init">component</span>
+    </div>
+    <div class="prompt-body">Build a reusable card component using my design tokens (tokens.css).
+
+The card should:
+- Have a soft shadow on hover (transition 0.2s ease)
+- Show a subtle border on focus (for keyboard users)
+- Include a skeleton loading state (animated shimmer)
+- Work in both light and dark colour scheme (use prefers-color-scheme)
+- Be a single self-contained CSS + HTML snippet I can copy anywhere</div>
+  </div>
+
+  <h3>Micro-Animations</h3>
+  <p>Claude excels at CSS-only animations. Be specific about timing and feel:</p>
+  <div class="prompt-card">
+    <div class="prompt-card-header">
+      <span>Animation Prompt</span>
+      <span class="prompt-tag tag-safe">animation</span>
+    </div>
+    <div class="prompt-body">Write a CSS animation for a page-load sequence:
+1. Background fades in (0–0.3s)
+2. Logo slides up 12px and fades in (0.2–0.5s)  
+3. Headline appears word-by-word (0.4–0.9s)
+4. CTA button pops in with a slight scale bounce (0.8–1.1s)
+
+Use CSS @keyframes only. Timing should feel smooth and editorial, not bouncy or playful. Ease curves: ease-out for movement, ease-in-out for fades.</div>
+  </div>
+
+  <h3>MVP Prototypes</h3>
+  <p>For full-screen prototypes, give Claude a complete picture: screens, flows, and the feeling you want. Ask for multi-screen navigation with JS-managed routing rather than multiple HTML files.</p>
+
+  <h3>Presentations</h3>
+  <p>Claude can generate beautiful HTML slide decks using <code>reveal.js</code> or pure CSS scroll-snap layouts. These are shareable, interactive, and far more impressive than static PDFs:</p>
+  <div class="prompt-card">
+    <div class="prompt-card-header">
+      <span>Presentation Prompt</span>
+      <span class="prompt-tag tag-refine">presentation</span>
+    </div>
+    <div class="prompt-body">Create a 6-slide HTML presentation for a client concept review.
+
+Slides:
+1. Title slide — project name, client name, date
+2. Problem we're solving (3 bullet points)
+3. Our approach (visual flow diagram in CSS)
+4. Key screens (placeholder boxes with labels)
+5. Next steps timeline
+6. Thank you + contact
+
+Aesthetic: Confident, editorial. Dark navy background, white text, single accent colour (#E85D04). Large typography. Keyboard navigation (left/right arrows). Smooth slide transitions.</div>
+  </div>
+
+  <h3>Product Documentation</h3>
+  <p>Share your prototype code and ask Claude to write the handoff notes. It will identify components, document states, and write developer-ready specs. Just say: "Read this prototype and write a developer handoff document covering components, interactions, and edge cases."</p>
+</div>
+</section>
+
+
+<!-- SECTION 7: TOOL STACK -->
+<section id="toolstack">
+<div class="container">
+  <span class="section-num">07 — Recommended Tool Stack</span>
+  <h2>Minimal, Powerful, Opinionated</h2>
+  <div class="section-divider"></div>
+  <p class="section-intro">You don't need many tools. You need the right ones. Every item here earns its place by doing one thing really well in the Claude design workflow.</p>
+
+  <h4>Core Tools</h4>
+  <div class="tool-grid">
+    <div class="tool-card">
+      <div class="tool-card-name">VS Code</div>
+      <div class="tool-card-role">Code Editor</div>
+      <p>Free, universal, and has the best Claude integration via the Claude extension. Live preview with the "Live Server" extension means you see changes instantly.</p>
+    </div>
+    <div class="tool-card">
+      <div class="tool-card-name">Claude.ai / Claude Code</div>
+      <div class="tool-card-role">AI Core</div>
+      <p>Claude.ai for conversation-based prototyping. Claude Code (terminal) for file-based iteration on larger codebases. Use both depending on task size.</p>
+    </div>
+    <div class="tool-card">
+      <div class="tool-card-name">GitHub + GitHub Desktop</div>
+      <div class="tool-card-role">Version Control</div>
+      <p>GitHub for cloud backup and branching. GitHub Desktop removes the terminal — everything visual. Integrates directly with Vercel for instant deploys.</p>
+    </div>
+    <div class="tool-card">
+      <div class="tool-card-name">Vercel</div>
+      <div class="tool-card-role">Prototype Hosting</div>
+      <p>Connect to GitHub once — every push auto-deploys. Free tier is more than enough for prototypes. Branch previews are perfect for A/B client testing.</p>
+    </div>
+  </div>
+
+  <h4>Design & Animation</h4>
+  <div class="tool-grid">
+    <div class="tool-card">
+      <div class="tool-card-name">Figma</div>
+      <div class="tool-card-role">Visual Design</div>
+      <p>For visual design, asset export, and stakeholder annotations. Not for prototyping — your Claude-generated HTML prototypes are far more interactive.</p>
+    </div>
+    <div class="tool-card">
+      <div class="tool-card-name">Motion (Framer Motion)</div>
+      <div class="tool-card-role">React Animations</div>
+      <p>When your prototype graduates to React, Motion provides declarative, production-quality animations Claude knows how to write fluently.</p>
+    </div>
+    <div class="tool-card">
+      <div class="tool-card-name">GSAP (free tier)</div>
+      <div class="tool-card-role">Complex Animations</div>
+      <p>For complex multi-step animation sequences in plain HTML prototypes. Claude can write GSAP timelines from natural language descriptions.</p>
+    </div>
+    <div class="tool-card">
+      <div class="tool-card-name">Google Fonts</div>
+      <div class="tool-card-role">Typography</div>
+      <p>Free, fast, CDN-hosted. Ask Claude to suggest font pairings for your aesthetic — it will include the <code>@import</code> link automatically in generated code.</p>
+    </div>
+  </div>
+
+  <h4>Documentation</h4>
+  <div class="tool-grid">
+    <div class="tool-card">
+      <div class="tool-card-name">Notion</div>
+      <div class="tool-card-role">Project Docs</div>
+      <p>For briefs, changelogs, decision logs, and client-facing documents. Paste Claude's markdown output directly — Notion renders it cleanly.</p>
+    </div>
+    <div class="tool-card">
+      <div class="tool-card-name">Markdown (.md files)</div>
+      <div class="tool-card-role">Code-level Docs</div>
+      <p>Keep documentation in the project repo as <code>.md</code> files. Claude can read and update them directly. Rendered beautifully on GitHub.</p>
+    </div>
+  </div>
+</div>
+</section>
+
+
+<!-- SECTION 8: REAL WORLD EXAMPLE -->
+<section id="example">
+<div class="container">
+  <span class="section-num">08 — Real-World Example</span>
+  <h2>Building a Wellness App from Zero to Client Link</h2>
+  <div class="section-divider"></div>
+  <p class="section-intro">A complete walkthrough of one designer using Claude, VS Code, GitHub, and Vercel to go from a napkin idea to a live, shareable prototype in a single day.</p>
+
+  <ol class="walkthrough">
+
+    <li class="wstep">
+      <div class="wstep-num">1</div>
+      <div class="wstep-body">
+        <h3>The Idea</h3>
+        <p>You want to design a daily micro-journaling app for people who find traditional journaling overwhelming. The concept: 60 seconds, three prompts, done.</p>
+        <div class="prompt-card">
+          <div class="prompt-card-header">
+            <span>Prompt to Claude</span>
+            <span class="prompt-tag tag-init">discovery</span>
+          </div>
+          <div class="prompt-body">I want to design a micro-journaling app. Core idea: users answer 3 short prompts every morning, taking under 60 seconds. Target: burned-out professionals who gave up on journaling.
+
+Give me:
+1. Five differentiating product directions (each one sentence)
+2. The three prompts that would appear every morning
+3. Key UX risks to solve for
+4. A first draft product brief (200 words max)</div>
+        </div>
+        <p>Claude returns five directions, three prompt options, risk analysis, and a brief. You pick the direction you love, edit the brief with your context, and save it as <code>01-discovery/brief.md</code>.</p>
+      </div>
+    </li>
+
+    <li class="wstep">
+      <div class="wstep-num">2</div>
+      <div class="wstep-body">
+        <h3>Generating User Flows</h3>
+        <p>Share the brief and ask Claude to map the key screens and user journey:</p>
+        <div class="prompt-card">
+          <div class="prompt-card-header">
+            <span>Prompt to Claude</span>
+            <span class="prompt-tag tag-init">flows</span>
+          </div>
+          <div class="prompt-body">Based on this brief [paste brief.md], create:
+1. A Mermaid flowchart of the core user journey (onboarding → daily check-in → history view)
+2. A flat list of every screen the app needs
+3. The 3 most critical edge cases to design for</div>
+        </div>
+        <p>Paste the Mermaid code into <strong>mermaid.live</strong> to see the visual flow. Save to <code>02-flows/user-flows.md</code>. This is your blueprint — everything built from here references it.</p>
+      </div>
+    </li>
+
+    <li class="wstep">
+      <div class="wstep-num">3</div>
+      <div class="wstep-body">
+        <h3>Generating the First Prototype</h3>
+        <p>With the brief and screen inventory ready, give Claude a full prototype prompt:</p>
+        <div class="prompt-card">
+          <div class="prompt-card-header">
+            <span>Prompt to Claude</span>
+            <span class="prompt-tag tag-init">prototype</span>
+          </div>
+          <div class="prompt-body">Build a complete interactive HTML prototype for the core daily check-in screen of my micro-journaling app.
+
+Context: [paste brief.md]
+
+Screens to include (use JS to show/hide):
+- Screen 1: Good morning greeting + "Start your 60 seconds" button
+- Screen 2: Three prompts shown one at a time with a text input each
+- Screen 3: Completion screen with a warm confirmation message
+
+Aesthetic: Calm, soft. Off-white background (#f7f4ee), dark warm text, serif font for prompts, clean sans for UI. Mobile-first, max-width 390px.
+
+Progress bar at top shows 0% → 33% → 66% → 100%.
+Smooth fade transitions between screens.
+Single HTML file, no external dependencies except Google Fonts.</div>
+        </div>
+        <p>Save output to <code>04-prototypes/v1-concept/index.html</code>. Open in browser and test. It should be fully functional.</p>
+      </div>
+    </li>
+
+    <li class="wstep">
+      <div class="wstep-num">4</div>
+      <div class="wstep-body">
+        <h3>Designer Refinement</h3>
+        <p>Now it's your turn. Open VS Code and make human judgment calls:</p>
+        <ul style="padding-left:1.2rem; margin:0.5rem 0;">
+          <li style="padding:0.2rem 0;">Rewrite all the placeholder copy with your brand voice</li>
+          <li style="padding:0.2rem 0;">Adjust font sizes and spacing to feel right at your eye</li>
+          <li style="padding:0.2rem 0;">Swap placeholder colours with your actual palette</li>
+          <li style="padding:0.2rem 0;">Test every interaction on your actual phone</li>
+        </ul>
+        <p>For anything technical — fixing a broken transition, tweaking an animation — go back to Claude with a targeted prompt. Keep your refinements surgical.</p>
+      </div>
+    </li>
+
+    <li class="wstep">
+      <div class="wstep-num">5</div>
+      <div class="wstep-body">
+        <h3>Versioning with GitHub</h3>
+        <p>Open GitHub Desktop and commit your working prototype before sending anything to a client:</p>
+        <pre><span class="comment"># In GitHub Desktop or terminal:</span>
+<span class="cmd">git add .</span>
+<span class="cmd">git commit -m "v1 concept prototype - daily check-in flow complete"</span>
+<span class="cmd">git push</span>
+
+<span class="comment"># Tag it for easy reference</span>
+<span class="cmd">git tag v1.0-concept</span>
+<span class="cmd">git push origin v1.0-concept</span></pre>
+        <p>Now create a branch for the next round of experiments so main stays clean:</p>
+        <pre><span class="cmd">git checkout -b</span> <span class="str">experiment/history-view</span></pre>
+      </div>
+    </li>
+
+    <li class="wstep">
+      <div class="wstep-num">6</div>
+      <div class="wstep-body">
+        <h3>Deploying the Prototype</h3>
+        <ol class="deploy-steps" style="margin:0.5rem 0;">
+          <li>Go to vercel.com and connect your GitHub repository</li>
+          <li>Set the root directory to <code>04-prototypes/v1-concept/</code></li>
+          <li>Click Deploy — live in under 30 seconds</li>
+          <li>Your URL: <code>micro-journal-v1.vercel.app</code></li>
+        </ol>
+        <p>For the next version: push changes to a new branch, Vercel creates a separate preview URL automatically.</p>
+      </div>
+    </li>
+
+    <li class="wstep">
+      <div class="wstep-num">7</div>
+      <div class="wstep-body">
+        <h3>Sending the Client Link</h3>
+        <p>Send your client a proper context-setting message rather than just a link:</p>
+        <div class="prompt-card">
+          <div class="prompt-card-header">
+            <span>Email to client — Claude helped draft this too</span>
+            <span class="prompt-tag tag-refine">client</span>
+          </div>
+          <div class="prompt-body">Hi Sarah,
+
+Here's the first interactive prototype for Micro Journal:
+→ micro-journal-v1.vercel.app
+
+Best viewed on mobile (it's a phone-first experience). 
+Try it on iPhone if you can — tap through all three screens.
+
+I've focused this version on the core daily check-in flow. The history and settings screens come in v2.
+
+A few things to notice:
+- The 60-second progress bar at the top
+- The one-at-a-time prompt reveal
+- The completion animation
+
+I'd love your reaction to the overall tone and pacing — does it feel calm enough? Too slow? Happy to jump on a call Thursday.</div>
+        </div>
+      </div>
+    </li>
+
+  </ol>
+
+  <h3>Common Mistakes to Avoid</h3>
+  <div class="mistakes-grid">
+    <div class="mistake-row header">
+      <div>❌ Common mistake</div>
+      <div>✅ What to do instead</div>
+    </div>
+    <div class="mistake-row">
+      <div><strong>Asking for too much at once</strong><br>Prompting Claude to "build the whole app" results in bloated, hard-to-edit code.</div>
+      <div><strong>Build screen by screen</strong><br>One screen per session. Combine them manually or in a follow-up prompt once each piece works.</div>
+    </div>
+    <div class="mistake-row">
+      <div><strong>Not saving before iterating</strong><br>Letting Claude overwrite working code with a broken version — and having no way back.</div>
+      <div><strong>Git commit before every Claude session</strong><br>Takes 10 seconds. Saves hours of frustration.</div>
+    </div>
+    <div class="mistake-row">
+      <div><strong>Accepting Claude's first output</strong><br>Shipping the generic first result without applying your design judgment and brand voice.</div>
+      <div><strong>Treat Claude as a starting point</strong><br>Expect to spend 30–40% of your time refining. Your taste is the differentiator.</div>
+    </div>
+    <div class="mistake-row">
+      <div><strong>Vague aesthetic prompts</strong><br>"Make it look nice" or "modern design" produce generic, AI-feeling results.</div>
+      <div><strong>Use specific references</strong><br>"Feels like a Field Notes journal — rough, tactile, honest" gives Claude something real to aim for.</div>
+    </div>
+    <div class="mistake-row">
+      <div><strong>Sharing prototypes without mobile testing</strong><br>Sending a link that looks broken on an iPhone and losing client confidence.</div>
+      <div><strong>Always test on real device first</strong><br>Ask Claude to "fix any mobile issues" after your first build before sharing anything.</div>
+    </div>
+    <div class="mistake-row">
+      <div><strong>Building in one massive file</strong><br>A 2,000 line HTML file becomes impossible to ask Claude to edit accurately.</div>
+      <div><strong>Break into screens and components</strong><br>Separate CSS into tokens.css, components.css. Claude edits smaller files far more reliably.</div>
+    </div>
+    <div class="mistake-row">
+      <div><strong>No context in new Claude sessions</strong><br>Starting fresh without sharing the brief, design system, or previous code leads to inconsistent outputs.</div>
+      <div><strong>Always share context upfront</strong><br>Begin every Claude session by pasting brief.md and your design tokens. Consistency follows.</div>
+    </div>
+  </div>
+
+  <div class="callout tip">
+    <span class="callout-icon">✦</span>
+    <div><strong>Final thought:</strong> The designers who get the most from Claude aren't the ones who know the most code — they're the ones with the clearest vision and the most precise language. Invest in learning to describe what you want with precision and specificity. Claude will handle the rest.</div>
+  </div>
+
+</div>
+</section>
+
+
+<footer>
+  <strong>Claude Design OS</strong> — A practical operating system for AI-assisted product design<br>
+  Built for designers who want to work faster without thinking less.
+</footer>
+
+</body>
+</html>
