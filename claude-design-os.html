@@ -1141,19 +1141,163 @@ Working on: v2 prototype after client feedback round.
   <span class="section-num">04 — Version Control for Designers</span>
   <h2>GitHub Without the Fear</h2>
   <div class="section-divider"></div>
-  <p class="section-intro">You don't need to understand Git deeply to benefit from it. Think of it as a time machine with labels. Here's the minimum viable Git workflow for designers.</p>
+  <p class="section-intro">You don't need to understand Git deeply to benefit from it. Think of it as a time machine with labels. This section covers everything — from creating your very first repository to managing branches like a pro.</p>
 
-  <h3>The Three Commands You Need</h3>
-  <pre><span class="comment"># Stage your changes</span>
+  <h3>Part 1 — Understanding GitHub in Plain English</h3>
+  <p>Before touching anything, here's the mental model that makes everything click:</p>
+
+  <div class="git-flow">
+    <div class="git-step">
+      <div class="git-step-num">📁</div>
+      <div class="git-step-content">
+        <h4>Repository (repo)</h4>
+        <p>A project folder that GitHub tracks. Everything inside it — every file, every change, every version — is saved. Think of it as your project's permanent home with a complete history.</p>
+      </div>
+    </div>
+    <div class="git-step">
+      <div class="git-step-num">📸</div>
+      <div class="git-step-content">
+        <h4>Commit</h4>
+        <p>A named snapshot of your project at a specific moment. Like saving a version of a Figma file, but with a label you write. You can jump back to any commit at any time.</p>
+      </div>
+    </div>
+    <div class="git-step">
+      <div class="git-step-num">🌿</div>
+      <div class="git-step-content">
+        <h4>Branch</h4>
+        <p>A parallel copy of your project where you can experiment freely. Changes on a branch don't affect your main project until you deliberately merge them in.</p>
+      </div>
+    </div>
+    <div class="git-step">
+      <div class="git-step-num">☁️</div>
+      <div class="git-step-content">
+        <h4>Push / Pull</h4>
+        <p>Push sends your local commits up to GitHub (cloud backup). Pull brings changes from GitHub down to your machine. For solo work, you mostly just push.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>Part 2 — Setting Up Your First Repository</h3>
+  <p>There are two ways to create a repo. Choose the one that fits how you're working:</p>
+
+  <h4>Option A — Create on GitHub.com (no install needed)</h4>
+  <div class="git-flow">
+    <div class="git-step">
+      <div class="git-step-num">1</div>
+      <div class="git-step-content">
+        <h4>Go to github.com and sign in</h4>
+        <p>Click the <strong>+</strong> icon in the top right corner → <strong>New repository</strong></p>
+      </div>
+    </div>
+    <div class="git-step">
+      <div class="git-step-num">2</div>
+      <div class="git-step-content">
+        <h4>Name your repository</h4>
+        <p>Use lowercase with hyphens: <code>wellness-app-prototype</code>. No spaces. Set it to <strong>Public</strong> (required for free Vercel/Netlify deploys) or <strong>Private</strong> for client work.</p>
+      </div>
+    </div>
+    <div class="git-step">
+      <div class="git-step-num">3</div>
+      <div class="git-step-content">
+        <h4>Tick "Add a README file"</h4>
+        <p>This initialises the repo so it's ready to receive files immediately. Click <strong>Create repository</strong>.</p>
+      </div>
+    </div>
+    <div class="git-step">
+      <div class="git-step-num">4</div>
+      <div class="git-step-content">
+        <h4>Upload your files</h4>
+        <p>Click <strong>Add file → Upload files</strong>. Drag your entire project folder in. Write a commit message like <code>Initial project upload</code> and click <strong>Commit changes</strong>.</p>
+      </div>
+    </div>
+  </div>
+
+  <h4>Option B — Create via Terminal (with Git installed)</h4>
+  <pre><span class="comment"># Navigate to your project folder</span>
+<span class="cmd">cd</span> <span class="path">~/your-project-folder</span>
+
+<span class="comment"># Initialise Git, make first commit</span>
+<span class="cmd">git init</span>
+<span class="cmd">git add .</span>
+<span class="cmd">git commit -m</span> <span class="str">"Initial commit"</span>
+
+<span class="comment"># Create repo on GitHub and push (requires GitHub CLI)</span>
+<span class="cmd">gh repo create</span> <span class="str">my-project</span> <span class="cmd">--public --source=. --push</span></pre>
+
+  <h3>Part 3 — How to Navigate GitHub</h3>
+  <p>Once your repo is live, here's what you'll actually use day-to-day:</p>
+
+  <div class="tool-grid">
+    <div class="tool-card">
+      <div class="tool-card-name">Code tab</div>
+      <div class="tool-card-role">Your files</div>
+      <p>Browse every file in your project. Click any file to read it. Click the pencil icon to edit it directly in the browser.</p>
+    </div>
+    <div class="tool-card">
+      <div class="tool-card-name">Commits</div>
+      <div class="tool-card-role">Your history</div>
+      <p>Click the clock icon (or "X commits") to see every saved snapshot. Click any commit to see exactly what changed.</p>
+    </div>
+    <div class="tool-card">
+      <div class="tool-card-name">Branches dropdown</div>
+      <div class="tool-card-role">Your versions</div>
+      <p>The dropdown at the top left of the Code tab. Switch between branches to see different versions of your project.</p>
+    </div>
+    <div class="tool-card">
+      <div class="tool-card-name">Releases</div>
+      <div class="tool-card-role">Named milestones</div>
+      <p>Found under the repo name on the right sidebar. Use these to mark client presentation versions — e.g. <code>v1.0-concept</code>.</p>
+    </div>
+  </div>
+
+  <div class="callout tip">
+    <span class="callout-icon">✦</span>
+    <div><strong>Secret shortcut:</strong> On any GitHub repository, press the <strong>.</strong> (full stop) key on your keyboard. It instantly opens a full VS Code editor in your browser — no install needed. Edit files, stage changes, and commit without leaving GitHub.</div>
+  </div>
+
+  <h3>Part 4 — How to Structure a Repo for Design Projects</h3>
+  <p>A well-structured repo makes it easier to navigate on GitHub and easier to reference in Claude prompts. Follow the project structure from Section 3, and always include these three files at the root level:</p>
+
+  <div class="git-flow">
+    <div class="git-step">
+      <div class="git-step-num">📄</div>
+      <div class="git-step-content">
+        <h4>README.md — your project's front page</h4>
+        <p>This file renders automatically on the GitHub repo homepage. Include: what the project is, who it's for, which file is the current prototype, and any key decisions. Ask Claude to write a first draft from your brief.</p>
+      </div>
+    </div>
+    <div class="git-step">
+      <div class="git-step-num">📄</div>
+      <div class="git-step-content">
+        <h4>CHANGELOG.md — what changed and when</h4>
+        <p>A running log of versions. Useful for client projects where you need to track what was changed after each feedback round. Format: date, version number, bullet list of changes.</p>
+      </div>
+    </div>
+    <div class="git-step">
+      <div class="git-step-num">📄</div>
+      <div class="git-step-content">
+        <h4>.gitignore — what NOT to track</h4>
+        <p>Tells Git to ignore system clutter. Create this file and paste in: <code>.DS_Store</code>, <code>node_modules/</code>, <code>*.log</code>, <code>.env</code>. Ask Claude to generate a full one for your stack.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>Part 5 — The Three Commands You Need Daily</h3>
+  <pre><span class="comment"># Stage your changes (select everything)</span>
 <span class="cmd">git add .</span>
 
 <span class="comment"># Save a named snapshot</span>
-<span class="cmd">git commit -m "Add animated submit button to check-in screen"</span>
+<span class="cmd">git commit -m</span> <span class="str">"Add animated submit button to check-in screen"</span>
 
-<span class="comment"># Push to GitHub (backup + sharing)</span>
+<span class="comment"># Push to GitHub (cloud backup + triggers Vercel deploy)</span>
 <span class="cmd">git push</span></pre>
 
-  <h3>When to Commit</h3>
+  <div class="callout info">
+    <span class="callout-icon">💡</span>
+    <div><strong>Write commit messages like headlines</strong> — not "update" or "fix stuff", but "Fix mobile nav overlap on iPhone SE" or "Add dark mode to check-in screen". You'll thank yourself when scrolling through history in three weeks.</div>
+  </div>
+
+  <h3>Part 6 — When to Commit</h3>
   <div class="git-flow">
     <div class="git-step">
       <div class="git-step-num">✓</div>
@@ -1185,7 +1329,7 @@ Working on: v2 prototype after client feedback round.
     </div>
   </div>
 
-  <h3>Experimenting Without Breaking Main</h3>
+  <h3>Part 7 — Experimenting Without Breaking Main</h3>
   <p>Branches are your safe sandbox. Make one whenever you want to try something risky:</p>
   <pre><span class="comment"># Create and switch to a new branch</span>
 <span class="cmd">git checkout -b</span> <span class="str">experiment/dark-mode</span>
