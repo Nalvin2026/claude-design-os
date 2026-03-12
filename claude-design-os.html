@@ -1405,16 +1405,16 @@ Working on: v2 prototype after client feedback round.
     <div class="host-card">
       <div class="host-card-head">
         <span class="host-name">GitHub Pages</span>
-        <span class="host-tag">No frills</span>
+        <span class="host-tag">Already have GitHub?</span>
       </div>
       <div class="host-body">
         <ul>
           <li>Completely free, built into GitHub</li>
-          <li>Simple setup for single HTML files</li>
-          <li>Slower to update (needs a push + wait)</li>
-          <li>No password protection on free plan</li>
+          <li>No extra accounts or tools needed</li>
+          <li>Auto-updates when you push changes</li>
+          <li>Permanent URL tied to your repo</li>
         </ul>
-        <div class="host-verdict">Good for long-lived, public-facing prototypes. Not ideal for rapid iteration with clients.</div>
+        <div class="host-verdict">Best if your project is already on GitHub and you don't want to sign up for anything else. Setup takes under 2 minutes.</div>
       </div>
     </div>
   </div>
@@ -1437,6 +1437,24 @@ Working on: v2 prototype after client feedback round.
     <li>You can rename it to something readable in Settings</li>
     <li>To update: drag the folder again or connect GitHub for auto-deploy</li>
   </ol>
+
+  <h3>The GitHub Pages Workflow (No extra accounts needed)</h3>
+  <p>If your project is already on GitHub, this is the fastest way to get a shareable link with zero new sign-ups:</p>
+  <ol class="deploy-steps">
+    <li>Go to your repository on <strong>github.com</strong></li>
+    <li>Click <strong>Settings</strong> (top navigation bar of the repo)</li>
+    <li>In the left sidebar, click <strong>Pages</strong></li>
+    <li>Under <em>Source</em>, select <strong>Deploy from a branch</strong></li>
+    <li>Set the branch to <strong>main</strong> and the folder to <strong>/ (root)</strong> → click <strong>Save</strong></li>
+    <li>Wait about 60 seconds, then refresh the Settings → Pages screen</li>
+    <li>GitHub shows your live URL: <code>yourusername.github.io/your-repo-name</code></li>
+    <li>Send that link to anyone — it works in any browser, no login required</li>
+  </ol>
+
+  <div class="callout info">
+    <span class="callout-icon">💡</span>
+    <div><strong>Staying in sync:</strong> Once GitHub Pages is set up, every time you upload a new version of your file to GitHub the live link automatically updates within about 60 seconds. No redeployment steps needed — push (or upload) the file, and the link is current.</div>
+  </div>
 
   <div class="callout warn">
     <span class="callout-icon">⚠️</span>
