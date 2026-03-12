@@ -340,10 +340,10 @@
     text-transform: uppercase;
   }
 
-  .tag-init { background: #dbeafe; color: #1d4e89; }
-  .tag-iter { background: #d1fae5; color: #065f46; }
-  .tag-refine { background: #fef3c7; color: #92400e; }
-  .tag-safe { background: #fce7f3; color: #9d174d; }
+  .tag-init,
+  .tag-iter,
+  .tag-refine,
+  .tag-safe { background: var(--accent); color: var(--paper); }
 
   .prompt-body {
     padding: 1.2rem 1.4rem;
@@ -384,10 +384,10 @@
 
   .callout-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 0.05rem; }
 
-  .callout.tip { background: #f0fdf4; border-left: 3px solid var(--green); color: #14532d; }
-  .callout.warn { background: #fffbeb; border-left: 3px solid var(--amber); color: #451a03; }
-  .callout.danger { background: #fef2f2; border-left: 3px solid #dc2626; color: #450a0a; }
-  .callout.info { background: #eff6ff; border-left: 3px solid var(--blue); color: #1e3a5f; }
+  .callout.tip,
+  .callout.warn,
+  .callout.danger,
+  .callout.info   { background: rgba(200, 75, 47, 0.10); border-left: 3px solid var(--accent); color: var(--ink); }
 
   /* ── TOOL CARDS ── */
   .tool-grid {
@@ -576,10 +576,10 @@
     font-size: 0.62rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    background: var(--rule);
+    background: var(--accent);
     padding: 0.2rem 0.55rem;
     border-radius: 100px;
-    color: var(--muted);
+    color: var(--paper);
   }
 
   .host-body {
@@ -674,6 +674,40 @@
     height: 2px;
     background: var(--accent);
     margin: 1rem 0 2rem;
+  }
+
+  /* ── BACK TO TOP ── */
+  #back-to-top {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 2.75rem;
+    height: 2.75rem;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    z-index: 999;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+  }
+  #back-to-top.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  #back-to-top:hover {
+    transform: translateY(-3px);
+    background: var(--accent);
+  }
+  #back-to-top svg {
+    width: 1.1rem;
+    height: 1.1rem;
   }
 
   /* ── FOOTER ── */
@@ -1836,6 +1870,20 @@ I'd love your reaction to the overall tone and pacing — does it feel calm enou
   <strong>Claude Design OS</strong> — A practical operating system for AI-assisted product design<br>
   Built for designers who want to work faster without thinking less.
 </footer>
+
+<button id="back-to-top" aria-label="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="18 15 12 9 6 15"/>
+  </svg>
+</button>
+
+<script>
+  const btn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', () => {
+    btn.classList.toggle('visible', window.scrollY > 400);
+  }, { passive: true });
+  btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+</script>
 
 </body>
 </html>
