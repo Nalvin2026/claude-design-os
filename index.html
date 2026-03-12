@@ -627,30 +627,26 @@
 
   .wstep {
     counter-increment: wstep;
-    display: grid;
-    grid-template-columns: 56px 1fr;
-    gap: 1.2rem;
+    display: block;
     margin-bottom: 2.5rem;
-    align-items: start;
   }
 
   .wstep-num {
-    background: var(--ink);
-    color: var(--paper);
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.15rem;
-    flex-shrink: 0;
+    display: none;
+  }
+
+  .wstep-body {
+    min-width: 0;
   }
 
   .wstep-body h3 {
-    margin-top: 0.4rem;
+    margin-top: 0;
     font-size: 1.1rem;
+  }
+
+  .wstep-body h3::before {
+    content: counter(wstep) ". ";
+    font-family: 'DM Serif Display', serif;
   }
 
   .wstep-body p { font-size: 0.93rem; }
@@ -701,7 +697,6 @@
     .tool-grid { grid-template-columns: 1fr 1fr; }
     .mistake-row { grid-template-columns: 1fr; }
     .mistake-row > div:first-child { border-bottom: 1px solid var(--rule); }
-    .wstep { grid-template-columns: 40px 1fr; gap: 0.8rem; }
   }
 </style>
 </head>
